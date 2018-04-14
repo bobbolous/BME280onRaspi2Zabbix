@@ -25,11 +25,19 @@ DEVICE = 0x77 # own device I2C address
 ```
 
 ## Make Zabbix agent send data to Zabbix Server
+- Data send from bme280.py ('Version' is the chip version)
+	Chip ID     : 96
+	Version     : 0
+	Temperature :  23.26 C
+	Pressure :  981.696544874 hPa
+	Humidity :  39.4967091683 %
+
 
 - TODO
-    - [ ] make a script that returns BME280 data truncated as we need it for zabbix_agent
-    - [ ] Integrate script in zabbix_agent.conf  
+    - [x] make a script that returns BME280 data truncated as we need it for zabbix_agent
+    - [x] Integrate script in zabbix_agent.conf  
 	- [ ] Template for Zabbix server frontend that requests/receives data as we like it
+	- [ ] Test the whole thing
 	
 # Thanks to 
 *Matt Hawkins for his great BME280 reading tool (bme280.py) written in Python
