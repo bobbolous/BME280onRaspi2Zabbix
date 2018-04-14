@@ -25,7 +25,11 @@ DEVICE = 0x77 # own device I2C address
 ```
 
 ## Make Zabbix agent send data to Zabbix Server
-*TODO
 
+- TODO
+    - [ ] make a script that returns BME280 data truncated as we need it for zabbix_agent
+    - [ ] Integrate script in zabbix_agent.conf  
+	- [ ] Template for Zabbix server frontend that requests/receives data as we like it
+	
 # Thanks to 
 *Matt Hawkins for his great BME280 reading tool (bme280.py) written in Python
