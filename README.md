@@ -5,20 +5,24 @@ https://www.raspberrypi-spy.co.uk/2016/07/using-bme280-i2c-temperature-pressure-
 ## Get Raspberry, I2C and BME280 running
 1. connect BME280 to RaspberryPi
 1. get I2C running
-..* '$ sudo apt install i2c-tools'
-..* '$ sudo adduser pi i2c'
-..* '$ i2cdetect -y 1'
+    + `$ sudo apt install i2c-tools`
+    + `$ sudo adduser pi i2c`
+    + `$ i2cdetect -y 1`
 1. import this python script
-..* wget https://bitbucket.org/MattHawkinsUK/rpispy-misc/raw/master/python/bme280.py
+    * `$ wget https://bitbucket.org/MattHawkinsUK/rpispy-misc/raw/master/python/bme280.py`
 1. adjust the BME280 I2C adress
 
+```
 ###vanilla bme280.py###
 DEVICE = 0x76 # Default device I2C address
 #######################
+```
 
+```
 ###modified bme280.py###
 DEVICE = 0x77 # own device I2C address
 ########################
+```
 
 ## Make Zabbix agent send data to Zabbix Server
 *TODO
