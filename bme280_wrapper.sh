@@ -18,17 +18,17 @@ case "$1" in
                 ;;
         temperature)
                 # 
-				python ${bmeScriptPath}/bme280.py | grep 'Temperature' | tr -d " " | tr -d "C" | cut -d ":" -f 2
+                python ${bmeScriptPath}/bme280.py | grep 'Temperature' | tr -d " " | tr -d "C" | cut -d ":" -f 2
                 ;;
-		pressure)
+        pressure)
                 # 
-				python ${bmeScriptPath}/bme280.py | grep 'Pressure' | tr -d " "| tr -d "hPa" | cut -d ":" -f 2
+                python ${bmeScriptPath}/bme280.py | grep 'Pressure' | tr -d " "| tr -d "hPa" | cut -d ":" -f 2
                 ;;
-		humidity)
+        humidity)
                 # 
-				python ${bmeScriptPath}/bme280.py | grep 'Humidity' | tr -d " "| tr -d "%" | cut -d ":" -f 2
+                python ${bmeScriptPath}/bme280.py | grep 'Humidity' | tr -d " "| tr -d "%" | cut -d ":" -f 2
                 ;;
-		*)
+        *)
         echo "Usage: $N {chipid|chipversion|temperature|pressure|humidity}" >&2
 esac
 exit 0

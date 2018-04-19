@@ -1,5 +1,5 @@
 # BME280onRaspi2Zabbix
-This repository is intended to provide a way to use Zabbix Server as a frontend for data collected from a BME280 environment sensor connected to a RaspberryPi. You will need (this is intended for / tested with) the following:
+This repository is intended to provide a way to use Zabbix Server as a frontend for data collected from a BME280 environment sensor connected to a RaspberryPi. CAUTION: SOME OF THE SETTINGS / PERMISSIONS MADE, MAY BE NOT SECURE. You will need (this is intended for / tested with) the following:
 + Raspberry Pi 3 Model B with
     + Raspbian GNU/Linux 9.4 (stretch)
 	+ BME280 breakout board
@@ -7,30 +7,38 @@ This repository is intended to provide a way to use Zabbix Server as a frontend 
 + Zabbix Server on a different machine in the same network (you can also install Zabbix Server on the same RaspberryPi)
     + instructions on how to install Zabbix Server are not included
 
-Use this fine tutorial to hook up your BME280 breakout board to your RaspberryPi
-https://www.raspberrypi-spy.co.uk/2016/07/using-bme280-i2c-temperature-pressure-sensor-in-python/
+Use this great [tutorial](https://www.raspberrypi-spy.co.uk/2016/07/using-bme280-i2c-temperature-pressure-sensor-in-python/) to hook up your BME280 breakout board to your RaspberryPi
+
 
 ## Get Raspberry, I2C, BME280 and Zabbix Agent running
+1. enable I2C through `sudo raspi-config` -> 'Interfacing Options' -> 'P5 I2C' -> 'Yes'
 1. connect BME280 to RaspberryPi
 1. get I2C running
+    + `$ sudo apt update`
     + `$ sudo apt install i2c-tools`
     + `$ sudo adduser pi i2c`
+	+ reboot so `/dev/i2c-1` is created
     + `$ i2cdetect -y 1`
+1. install python (and SMBus library)
+	+ ´sudo apt install python python-smbus´
 1. import this python script
     * `$ wget https://bitbucket.org/MattHawkinsUK/rpispy-misc/raw/master/python/bme280.py`
 1. adjust the BME280 I2C adress (see section below)
-1. move the script
-    + `$ mv bme280.py /etc/zabbix/scripts/`
 1. install Zabbix Agent
     + `$ sudo apt install zabbix-agent`
-1. import wrapper script
-	* `$ wget https://github.com/bobbolous/BME280onRaspi2Zabbix/blob/master/bme280_wrapper.sh`
-1. move the script
+1. move the script and change permissions 
     + `$ sudo mkdir /etc/zabbix/scripts/`
-    + `$ mv bme280_wrapper.sh /etc/zabbix/scripts/`
-1. integrate wrapper script in zabbix_agentd.conf
+    + `$ sudo mv bme280.py /etc/zabbix/scripts/`
+	CAUTION: THIS MIGHT BE A SECURITY ISSUE IF YOU ARE IN AN UNSECURE NETWORK:
+	+ `$ sudo chmod a+x /etc/zabbix/scripts/bme280.py`
+1. import wrapper script
+	* `$ wget https://raw.githubusercontent.com/bobbolous/BME280onRaspi2Zabbix/master/bme280_wrapper.sh`
+1. move the script and change permissions
+    + `$ sudo mv bme280_wrapper.sh /etc/zabbix/scripts/`
+	+ `$ sudo chmod a+x /etc/zabbix/scripts/bme280_wrapper.sh`
+1. integrate wrapper script in zabbix_agentd.conf (see section below)
 1. change permissions for i2c device (CAUTION: THIS MIGHT BE A SECURITY ISSUE IF YOU ARE IN AN UNSECURE NETWORK)
-	+ $ sudo chmod o+rw i2c-1
+	+ $ sudo chmod o+rw /dev/i2c-1
 1. Test bme280.py (see section below)
 1. Test bme280_wrapper.sh (see section below)
 1. Test zabbix through zabbix_get (see section below)
@@ -50,6 +58,10 @@ $ i2cdetect -y 1
 50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 70: -- -- -- -- -- -- -- 77
+```
+
+```
+sudo nano bme280.py
 ```
 
 ```
@@ -90,7 +102,7 @@ UserParameter=bme280_wrapper.sh[*],/etc/zabbix/scripts/bme280_wrapper.sh $1
 ## Test output of bme280.py
 Data send from bme280.py ('Version' is the chip version):
 ```
-$ ./bme280.py
+$ /etc/zabbix/scripts/bme280.py
 Chip ID     : 96
 Version     : 0
 Temperature :  21.02 C
@@ -100,7 +112,7 @@ Humidity :  44.8311472966 %
 ```	
 ## Test output of bme280_wrapper.sh
 ```
-$ ./bme280_wrapper.sh temperature
+$ /etc/zabbix/scripts/bme280_wrapper.sh temperature
 21.02
 ```
 
@@ -112,16 +124,6 @@ Exchange '127.0.0.1' with your client IP (Raspi with BME) when running this comm
 $ zabbix_get -s 127.0.0.1 -k bme280_wrapper.sh[temperature]
 21.02
 ```
-
-- TODO
-    - [x] make a script that returns BME280 data truncated as we need it for zabbix_agent
-    - [x] Integrate script in zabbix_agent.conf  
-	- [x] Template for Zabbix server frontend that requests/receives data as we like it
-	- [ ] Test the whole thing
-	
-	
-	needed?: $ sudo adduser pi i2c
-	 
 	
 # Thanks to 
 *Matt Hawkins for his great BME280 reading tool (bme280.py) written in Python
