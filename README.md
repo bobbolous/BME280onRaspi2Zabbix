@@ -20,15 +20,18 @@ Use this great [tutorial](https://www.raspberrypi-spy.co.uk/2016/07/using-bme280
 	+ reboot so `/dev/i2c-1` is created
     + `$ i2cdetect -y 1`
 1. install python (and SMBus library)
-	+ ´sudo apt install python python-smbus´
+	+ `sudo apt install python python-smbus`
 1. import this python script
     * `$ wget https://bitbucket.org/MattHawkinsUK/rpispy-misc/raw/master/python/bme280.py`
 1. adjust the BME280 I2C adress (see section below)
 1. install Zabbix Agent
     + `$ sudo apt install zabbix-agent`
+1. allow zabbix access to i2c	
+	+ `sudo usermod -aG i2c zabbix`
 1. move the script and change permissions 
     + `$ sudo mkdir /etc/zabbix/scripts/`
     + `$ sudo mv bme280.py /etc/zabbix/scripts/`
+	
 	CAUTION: THIS MIGHT BE A SECURITY ISSUE IF YOU ARE IN AN UNSECURE NETWORK:
 	+ `$ sudo chmod a+x /etc/zabbix/scripts/bme280.py`
 1. import wrapper script
@@ -37,8 +40,10 @@ Use this great [tutorial](https://www.raspberrypi-spy.co.uk/2016/07/using-bme280
     + `$ sudo mv bme280_wrapper.sh /etc/zabbix/scripts/`
 	+ `$ sudo chmod a+x /etc/zabbix/scripts/bme280_wrapper.sh`
 1. integrate wrapper script in zabbix_agentd.conf (see section below)
-1. change permissions for i2c device (CAUTION: THIS MIGHT BE A SECURITY ISSUE IF YOU ARE IN AN UNSECURE NETWORK)
-	+ $ sudo chmod o+rw /dev/i2c-1
+1. add zabbix user to i2c group
+	+ `$ sudo usermod -aG i2c zabbix`
+1. restart RaspberryPi
+    + `$ sudo reboot`
 1. Test bme280.py (see section below)
 1. Test bme280_wrapper.sh (see section below)
 1. Test zabbix through zabbix_get (see section below)
